@@ -181,8 +181,13 @@ open class ColorBarPicker: UIControl {
 		
 		self.value = percent.pinned(between: 0, and: 1)
 	}
-	
+
+	var beginningValue: CGFloat?
+
 	override open func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+
+		beginningValue = self.value
+
 		self.trackIndicator(with: touch)
 	
 		growIndicator()
@@ -199,12 +204,19 @@ open class ColorBarPicker: UIControl {
 		super.endTracking(touch, with: event)
 		
 		shrinkIndicator()
+
+		beginningValue = nil
 	}
 	
 	override open func cancelTracking(with event: UIEvent?) {
 		super.cancelTracking(with: event)
 		
 		shrinkIndicator()
+
+		if let beginningValue = beginningValue {
+			self.value = beginningValue
+		}
+		beginningValue = nil
 	}
 	
 	private func changeIndicatorSize(to size: CGSize) {

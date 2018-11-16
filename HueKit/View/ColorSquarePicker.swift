@@ -103,9 +103,12 @@ open class ColorSquarePicker: UIControl {
 		
 		self.value = touchValue
 	}
-	
+
+	var beginningValue: CGPoint?
 	override open func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-	
+
+		beginningValue = self.value
+
 		self.trackIndicator(with: touch)
 		
 		growIndicator()
@@ -124,12 +127,19 @@ open class ColorSquarePicker: UIControl {
 		super.endTracking(touch, with: event)
 		
 		shrinkIndicator()
+
+		beginningValue = nil
 	}
 	
 	override open func cancelTracking(with event: UIEvent?) {
 		super.cancelTracking(with: event)
-		
+
 		shrinkIndicator()
+
+		if let beginningValue = beginningValue {
+			self.value = beginningValue
+		}
+		beginningValue = nil
 	}
 	
 	private func changeIndicatorSize(to size: CGFloat) {
